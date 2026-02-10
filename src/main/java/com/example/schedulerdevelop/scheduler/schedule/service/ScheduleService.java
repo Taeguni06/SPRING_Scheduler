@@ -1,6 +1,7 @@
 package com.example.schedulerdevelop.scheduler.schedule.service;
 import com.example.schedulerdevelop.global.exception.NotEqualsUserIdException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
+import com.example.schedulerdevelop.scheduler.comment.service.CommentService;
 import com.example.schedulerdevelop.scheduler.schedule.dto.*;
 import com.example.schedulerdevelop.scheduler.schedule.entity.Schedule;
 import com.example.schedulerdevelop.scheduler.schedule.repository.ScheduleRepository;
@@ -19,6 +20,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final CommentService commentService;
 
     @Transactional
     public CreateScheduleResponse save(CreateScheduleRequest request, Long userId) {
@@ -73,17 +75,18 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public GetScheduleResponse findOne(Long scheduleId) {
+    public GetOneScheduleResponse findOne(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new NotFoundException("일정을 찾을 수 없습니다.")
         );
-        return new GetScheduleResponse(
+        return new GetOneScheduleResponse(
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
                 schedule.getUser().getName(),
                 schedule.getCreatedAt(),
-                schedule.getModifiedAt()
+                schedule.getModifiedAt(),
+                commentService.findByScheduleId(scheduleId)
         );
     }
 
