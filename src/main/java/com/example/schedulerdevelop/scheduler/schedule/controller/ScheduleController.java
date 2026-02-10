@@ -1,0 +1,77 @@
+package com.example.schedulerdevelop.scheduler.schedule.controller;
+
+import com.example.schedulerdevelop.scheduler.schedule.dto.*;
+import com.example.schedulerdevelop.scheduler.schedule.service.ScheduleService;
+import com.example.schedulerdevelop.scheduler.user.dto.UserResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/schedules")
+public class ScheduleController {
+
+    private final ScheduleService scheduleService;
+
+    @PostMapping
+    public ResponseEntity<CreateScheduleResponse> createSchedule(
+            @RequestBody CreateScheduleRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        HttpSession session = httpRequest.getSession(false);
+        if (session == null || session.getAttribute("LOGIN_USER") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        UserResponse loginUser = (UserResponse) session.getAttribute("LOGIN_USER");
+        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(request, loginUser.getId()));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GetScheduleResponse>> findAll(@RequestParam(required = false) String userName
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userName));
+    }
+
+    @GetMapping("/{scheduleId}")
+    public ResponseEntity<GetScheduleResponse> findOne (@PathVariable Long scheduleId) {
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findOne(scheduleId));
+    }
+
+    @PutMapping("/{scheduleId}")
+    public ResponseEntity<UpdateScheduleResponse> updateSchedule(
+            @PathVariable Long scheduleId,
+            HttpServletRequest httpRequest,
+            @RequestBody UpdateScheduleRequest request
+    ) {
+        HttpSession session = httpRequest.getSession(false);
+        if (session == null || session.getAttribute("LOGIN_USER") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        UserResponse loginUser = (UserResponse) session.getAttribute("LOGIN_USER");
+
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.update(scheduleId, request, loginUser.getId()));
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<Void> deleteSchedule(
+            @PathVariable Long scheduleId,
+            HttpServletRequest httpRequest
+    ) {
+
+        HttpSession session = httpRequest.getSession(false);
+        if (session == null || session.getAttribute("LOGIN_USER") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UserResponse loginUser = (UserResponse) session.getAttribute("LOGIN_USER");
+
+        scheduleService.delete(scheduleId, loginUser.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+}
