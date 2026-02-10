@@ -5,6 +5,7 @@ import com.example.schedulerdevelop.scheduler.schedule.service.ScheduleService;
 import com.example.schedulerdevelop.scheduler.user.dto.UserResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class ScheduleController {
 
     @PostMapping
     public ResponseEntity<CreateScheduleResponse> createSchedule(
-            @RequestBody CreateScheduleRequest request,
+            @Valid @RequestBody CreateScheduleRequest request,
             HttpServletRequest httpRequest
     ) {
         HttpSession session = httpRequest.getSession(false);

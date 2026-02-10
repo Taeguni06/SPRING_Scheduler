@@ -8,6 +8,7 @@ import com.example.schedulerdevelop.scheduler.comment.service.CommentService;
 import com.example.schedulerdevelop.scheduler.user.dto.UserResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CommentController {
     public ResponseEntity<CommentResponse> createComment(
             @PathVariable Long scheduleId,
             HttpServletRequest httpRequest,
-            @RequestBody CreateCommentRequest request
+            @Valid @RequestBody CreateCommentRequest request
     ) {
         HttpSession session = httpRequest.getSession(false);
         if (session == null || session.getAttribute("LOGIN_USER") == null) {
