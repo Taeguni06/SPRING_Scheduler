@@ -1,6 +1,7 @@
 package com.example.schedulerdevelop.scheduler.user.service;
 import com.example.schedulerdevelop.global.exception.NotEqualsPasswordException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
+import com.example.schedulerdevelop.global.security.PasswordEncoder;
 import com.example.schedulerdevelop.scheduler.user.dto.*;
 import com.example.schedulerdevelop.scheduler.user.entity.User;
 import com.example.schedulerdevelop.scheduler.user.repository.UserRepository;
@@ -16,13 +17,16 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserResponse signup(SignUpRequest request) {
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
         User user = new User(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
+                encodedPassword
         );
         User save = userRepository.save(user);
         return new UserResponse(
@@ -40,7 +44,7 @@ public class UserService {
                 () -> new NotFoundException("유저를 찾을 수 없습니다.")
         );
 
-        if(!request.getPassword().equals(user.getPassword())) {
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new NotEqualsPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -98,7 +102,7 @@ public class UserService {
                 () -> new NotFoundException("유저를 찾을 수 없습니다.")
         );
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new NotEqualsPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -122,7 +126,7 @@ public class UserService {
                 () -> new NotFoundException("유저를 찾을 수 없습니다.")
         );
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new NotEqualsPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
