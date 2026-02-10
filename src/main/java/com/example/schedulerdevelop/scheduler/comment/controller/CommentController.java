@@ -1,5 +1,6 @@
 package com.example.schedulerdevelop.scheduler.comment.controller;
 
+import com.example.schedulerdevelop.global.exception.UnauthorizedException;
 import com.example.schedulerdevelop.scheduler.comment.dto.CommentResponse;
 import com.example.schedulerdevelop.scheduler.comment.dto.CreateCommentRequest;
 import com.example.schedulerdevelop.scheduler.comment.service.CommentService;
@@ -12,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/schedules/{scheduleId}/comments")
+@RequestMapping("/schedules/{scheduleId}/comments")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -26,7 +27,7 @@ public class CommentController {
     ) {
         HttpSession session = httpRequest.getSession(false);
         if (session == null || session.getAttribute("LOGIN_USER") == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
 
         UserResponse loginUser = (UserResponse) session.getAttribute("LOGIN_USER");

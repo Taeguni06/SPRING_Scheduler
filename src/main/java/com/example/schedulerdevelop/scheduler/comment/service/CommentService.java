@@ -36,11 +36,13 @@ public class CommentService {
                 user,
                 request.getContent()
         );
+
+        Comment save = commentRepository.save(comment);
         return new CommentResponse(
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
+                save.getId(),
+                save.getContent(),
+                save.getCreatedAt(),
+                save.getModifiedAt()
         );
     }
 }

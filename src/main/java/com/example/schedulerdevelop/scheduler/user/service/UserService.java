@@ -1,14 +1,15 @@
 package com.example.schedulerdevelop.scheduler.user.service;
 import com.example.schedulerdevelop.global.exception.NotEqualsPasswordException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
-import com.example.schedulerdevelop.scheduler.user.dto.LoginRequest;
-import com.example.schedulerdevelop.scheduler.user.dto.SignUpRequest;
-import com.example.schedulerdevelop.scheduler.user.dto.UserResponse;
+import com.example.schedulerdevelop.scheduler.user.dto.*;
 import com.example.schedulerdevelop.scheduler.user.entity.User;
 import com.example.schedulerdevelop.scheduler.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class UserService {
         );
     }
 
+    @Transactional
     public UserResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new NotFoundException("유저를 찾을 수 없습니다.")
@@ -49,5 +51,81 @@ public class UserService {
                 user.getCreatedAt(),
                 user.getModifiedAt()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponse> findAll() {
+        List<User> users = userRepository.findAll();
+
+        if (users.isEmpty()) {
+            throw new NotFoundException("유저를 찾을 수 없습니다.");
+        }
+
+        List<UserResponse> dtos = new ArrayList<>();
+        for (User user : users) {
+            UserResponse dto = new UserResponse(
+                    user.getId(),
+                    user.getName(),
+                    user.getEmail(),
+                    user.getCreatedAt(),
+                    user.getModifiedAt()
+            );
+
+            dtos.add(dto);
+        }
+
+        return dtos;
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse findOne(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("유저를 찾을 수 없습니다.")
+        );
+
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
+
+    @Transactional
+    public UserResponse update(Long userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("유저를 찾을 수 없습니다.")
+        );
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new NotEqualsPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+
+        user.update(
+                request.getName(),
+                request.getEmail()
+        );
+
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
+
+    @Transactional
+    public void delete(Long userId, DeleteUserRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("유저를 찾을 수 없습니다.")
+        );
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new NotEqualsPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+
+        userRepository.deleteById(userId);
     }
 }

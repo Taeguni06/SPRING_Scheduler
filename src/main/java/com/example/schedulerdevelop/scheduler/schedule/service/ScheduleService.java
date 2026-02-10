@@ -44,7 +44,14 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public List<GetScheduleResponse> findAll(String userName) {
-        List<Schedule> schedules = scheduleRepository.findByUserName(userName);
+        List<Schedule> schedules;
+
+        if (userName != null && !userName.isBlank()) {
+            schedules = scheduleRepository.findByUserName(userName);
+        } else {
+            schedules = scheduleRepository.findAll();
+        }
+
         if (schedules.isEmpty()) {
             throw new NotFoundException("일정을 찾을 수 없습니다.");
         }
@@ -55,7 +62,7 @@ public class ScheduleService {
                     schedule.getId(),
                     schedule.getTitle(),
                     schedule.getContent(),
-                    userName,
+                    schedule.getUser().getName(),
                     schedule.getCreatedAt(),
                     schedule.getModifiedAt()
             );

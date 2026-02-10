@@ -1,18 +1,16 @@
 package com.example.schedulerdevelop.scheduler.user.controller;
 
 import com.example.schedulerdevelop.global.customConst.SessionConst;
-import com.example.schedulerdevelop.scheduler.user.dto.LoginRequest;
-import com.example.schedulerdevelop.scheduler.user.dto.SignUpRequest;
-import com.example.schedulerdevelop.scheduler.user.dto.UserResponse;
+import com.example.schedulerdevelop.scheduler.user.dto.*;
 import com.example.schedulerdevelop.scheduler.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,8 +40,35 @@ public class UserController {
     public ResponseEntity<Void> logout(HttpServletRequest httpRequest) {
         HttpSession session = httpRequest.getSession(false);
         if (session != null) {
-            session.invalidate(); // 세션 무효화
+            session.invalidate();
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponse>> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<UserResponse> findOne(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findOne(userId));
+    }
+
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<UserResponse> update(
+            @PathVariable Long userId,
+            @RequestBody UpdateUserRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, request));
+    }
+
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long userId,
+            @RequestBody DeleteUserRequest request
+    ) {
+        userService.delete(userId, request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
