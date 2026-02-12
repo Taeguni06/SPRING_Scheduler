@@ -13,5 +13,6 @@ public class UpdateUserRequest {
     @Email
     @NotBlank
     private String email;
+    @NotBlank @Size(min = 8, message = "비밀번호는 8자 이상입니다.")
     private String password;
 }
