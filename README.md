@@ -43,6 +43,9 @@
     └── com.example.schedulerdevelop
     └── SchedulerDevelopApplicationTests.java
 
+<h1>API 명세서</h1>
+
+SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 
 ## 회원 관리 API
 

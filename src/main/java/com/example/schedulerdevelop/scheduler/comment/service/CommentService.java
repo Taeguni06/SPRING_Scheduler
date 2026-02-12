@@ -2,6 +2,7 @@ package com.example.schedulerdevelop.scheduler.comment.service;
 
 import com.example.schedulerdevelop.global.exception.NotEqualsException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
+import com.example.schedulerdevelop.global.exception.OverCommentException;
 import com.example.schedulerdevelop.scheduler.comment.dto.CommentResponse;
 import com.example.schedulerdevelop.scheduler.comment.dto.CreateCommentRequest;
 import com.example.schedulerdevelop.scheduler.comment.dto.UpdateCommentRequest;
@@ -28,6 +29,10 @@ public class CommentService {
 
     @Transactional
     public CommentResponse save(Long scheduleId, CreateCommentRequest request, Long userId) {
+        if (commentRepository.findByScheduleId(scheduleId).size() >= 10) {
+            throw new OverCommentException("댓글 개수 초과 (10개 미만)");
+        }
+
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new NotFoundException("일정을 찾을 수 없습니다.")
         );
