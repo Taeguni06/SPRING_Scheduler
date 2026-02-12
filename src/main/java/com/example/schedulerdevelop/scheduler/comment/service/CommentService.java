@@ -1,6 +1,6 @@
 package com.example.schedulerdevelop.scheduler.comment.service;
 
-import com.example.schedulerdevelop.global.exception.NotEqualsUserIdException;
+import com.example.schedulerdevelop.global.exception.NotEqualsException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
 import com.example.schedulerdevelop.scheduler.comment.dto.CommentResponse;
 import com.example.schedulerdevelop.scheduler.comment.dto.CreateCommentRequest;
@@ -91,7 +91,7 @@ public class CommentService {
         );
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new NotEqualsUserIdException("유저 ID가 일치하지 않습니다.");
+            throw new NotEqualsException("유저 ID가 일치하지 않습니다.");
         }
 
         comment.update(request.getTitle());
@@ -110,7 +110,7 @@ public class CommentService {
         );
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new NotEqualsUserIdException("유저 ID가 일치하지 않습니다.");
+            throw new NotEqualsException("유저 ID가 일치하지 않습니다.");
         }
 
         commentRepository.deleteById(commentId);

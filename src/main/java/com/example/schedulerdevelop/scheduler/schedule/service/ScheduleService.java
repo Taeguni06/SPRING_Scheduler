@@ -1,5 +1,5 @@
 package com.example.schedulerdevelop.scheduler.schedule.service;
-import com.example.schedulerdevelop.global.exception.NotEqualsUserIdException;
+import com.example.schedulerdevelop.global.exception.NotEqualsException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
 import com.example.schedulerdevelop.scheduler.comment.service.CommentService;
 import com.example.schedulerdevelop.scheduler.schedule.dto.*;
@@ -12,9 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -108,7 +105,7 @@ public class ScheduleService {
         );
 
         if(!schedule.getUser().getId().equals(userId)) {
-            throw new NotEqualsUserIdException("유저 ID가 일치하지 않습니다.");
+            throw new NotEqualsException("유저 ID가 일치하지 않습니다.");
         }
         schedule.update(request.getTitle());
 
@@ -129,7 +126,7 @@ public class ScheduleService {
         );
 
         if(!schedule.getUser().getId().equals(userId)) {
-            throw new NotEqualsUserIdException("유저 ID가 일치하지 않습니다.");
+            throw new NotEqualsException("유저 ID가 일치하지 않습니다.");
         }
 
         scheduleRepository.deleteById(scheduleId);

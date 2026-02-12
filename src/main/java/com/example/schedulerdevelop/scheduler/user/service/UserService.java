@@ -1,5 +1,5 @@
 package com.example.schedulerdevelop.scheduler.user.service;
-import com.example.schedulerdevelop.global.exception.NotEqualsPasswordException;
+import com.example.schedulerdevelop.global.exception.NotEqualsException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
 import com.example.schedulerdevelop.global.security.PasswordEncoder;
 import com.example.schedulerdevelop.scheduler.user.dto.*;
@@ -45,7 +45,7 @@ public class UserService {
         );
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new NotEqualsPasswordException("비밀번호가 일치하지 않습니다.");
+            throw new NotEqualsException("비밀번호가 일치하지 않습니다.");
         }
 
         return new UserResponse(
@@ -103,7 +103,7 @@ public class UserService {
         );
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new NotEqualsPasswordException("비밀번호가 일치하지 않습니다.");
+            throw new NotEqualsException("비밀번호가 일치하지 않습니다.");
         }
 
         user.update(
@@ -127,7 +127,7 @@ public class UserService {
         );
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new NotEqualsPasswordException("비밀번호가 일치하지 않습니다.");
+            throw new NotEqualsException("비밀번호가 일치하지 않습니다.");
         }
 
         userRepository.deleteById(userId);

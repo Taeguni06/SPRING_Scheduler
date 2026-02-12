@@ -1,5 +1,6 @@
 package com.example.schedulerdevelop.global.handler;
 
+import com.example.schedulerdevelop.global.exception.NotEqualsException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
 import com.example.schedulerdevelop.global.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleNotFound(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
                 "status", 404,
+                "message", e.getMessage()
+        ));
+    }
+
+    @ExceptionHandler(NotEqualsException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFound(NotEqualsException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "status", 403,
                 "message", e.getMessage()
         ));
     }
