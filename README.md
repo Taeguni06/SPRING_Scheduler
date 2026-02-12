@@ -50,36 +50,7 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 ## 회원 관리 API
 
 | 기능 | Method | URL | 설명 |
-|------|--------|-----|------|
-| 회원 가입 | `POST` | `/signup` | 새로운 유저를 등록합니다. |
-| 로그인 | `POST` | `/login` | 유저 인증을 진행합니다. |
-| 로그아웃 | `POST` | `/logout` | 유저 세션을 종료합니다. |
-| 유저 조회 | `GET` | `/users/{userId}` | ID를 통해 특정 유저 정보를 조회합니다. |
-| 유저 수정 | `PUT` | `/users/{userId}` | 유저 정보를 업데이트합니다. |
-| 회원 탈퇴 | `DELETE` | `/users/{userId}` | 유저 계정을 삭제합니다. |
-| 유저 전체 조회 | `GET` | `/users` | 모든 유저 목록을 조회합니다. |
-
-## 일정 관리 API
-
-| 기능 | Method | URL | 설명 |
-|------|--------|-----|------|
-| 일정 생성 | `POST` | `/schedules` | 새로운 일정을 생성합니다. |
-| 일정 단건 조회 | `GET` | `/schedules/{scheduleId}` | ID를 통해 일정을 상세 조회합니다. |
-| 일정 목록 조회 | `GET` | `/schedules` | 페이징 및 이름 조건(`?userName=`)으로 일정을 조회합니다. |
-| 일정 전체 조회 | `GET` | `/schedules/all` | 모든 일정을 조회합니다. (테스트용) |
-| 일정 수정 | `PUT` | `/schedules/{scheduleId}` | 해당 일정의 내용을 수정합니다. |
-| 일정 삭제 | `DELETE` | `/schedules/{scheduleId}` | 해당 일정을 삭제합니다. |
-
-## 댓글 관리 API
-
-| 기능 | Method | URL | 설명 |
-|------|--------|-----|------|
-| 댓글 작성 | `POST` | `/schedules/{scheduleId}/comments` | 특정 일정에 댓글을 작성합니다. |
-| 댓글 상세 조회 | `GET` | `/schedules/{sId}/comments/{cId}` | 특정 댓글 내용을 조회합니다. |
-| 댓글 수정 | `PUT` | `/schedules/{sId}/comments/{cId}` | 작성한 댓글을 수정합니다. |
-| 댓글 삭제 | `DELETE` | `/schedules/{sId}/comments/{cId}` | 특정 댓글을 삭제합니다. |
-
-# API 명세서
+|------|--------|-----|------|# API 명세서
 
 ## 1. 일정 관리 API
 
@@ -150,11 +121,8 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 #### ERROR CASE
 ```json
 {
-    "timestamp": "2026-02-12T10:30:00",
-    "status": 404,
-    "error": "Not Found",
     "message": "오류: 존재하지 않음",
-    "path": "/schedules/1"
+    "status": 404
 }
 ```
 
@@ -196,11 +164,8 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 #### ERROR CASE
 ```json
 {
-    "timestamp": "2026-02-12T10:30:00",
-    "status": 404,
-    "error": "Not Found",
     "message": "오류: 해당하는 일정이 없습니다.",
-    "path": "/schedules"
+    "status": 404
 }
 ```
 
@@ -234,11 +199,8 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 #### ERROR CASE
 ```json
 {
-    "timestamp": "2026-02-12T10:30:00",
-    "status": 404,
-    "error": "Not Found",
     "message": "오류: 일정이 없습니다.",
-    "path": "/schedules/all"
+    "status": 404
 }
 ```
 
@@ -280,23 +242,16 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 #### ERROR CASE
 ```json
 {
-    "status": 403,
-    "message": "오류: 비밀번호 불일치"
+    "message": "오류: 비밀번호 불일치",
+    "status": 403
 }
 ```
 ```json
 {
-    "timestamp": "2026-02-12T10:30:00",
-    "status": 404,
-    "error": "Not Found",
     "message": "오류: 존재하지 않음",
-    "path": "/schedules/1"
+    "status": 404
 }
 ```
-
----
-
-### 1.6 일정 삭제
 **URL:** `DELETE /schedules/{scheduleId}`
 
 #### REQUEST BODY
@@ -318,25 +273,268 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 #### ERROR CASE
 ```json
 {
-    "status": 403,
-    "message": "오류: 비밀번호 불일치"
+    "message": "오류: 비밀번호 불일치",
+    "status": 403
 }
 ```
 ```json
 {
-    "timestamp": "2026-02-12T10:30:00",
-    "status": 404,
-    "error": "Not Found",
     "message": "오류: 존재하지 않음",
-    "path": "/schedules/1"
+    "status": 404
 }
 ```
 
 ---
 
-## 2. 댓글 관리 API
+## 2. 회원 관리 API
 
-### 2.1 댓글 생성
+### 2.1 회원 가입
+**URL:** `POST /signup`
+
+#### REQUEST BODY
+```json
+{
+    "username": "String (필수)",
+    "email": "String (필수)",
+    "password": "String (필수)"
+}
+```
+
+#### RESPONSE STATUS CODE
+| 코드 | 설명 |
+|------|------|
+| 201 | 생성 성공 |
+| 400 | 잘못된 요청 |
+| 409 | 중복된 이메일 |
+| 500 | 서버 오류 |
+
+#### RESPONSE
+```json
+{
+  "id": 1,
+  "name": "사용자명",
+  "email": "user@example.com",
+  "createdAt": "생성 시간",
+  "modifiedAt": "수정 시간"
+}
+```
+
+#### ERROR CASE
+```json
+{
+    "message": "이미 존재하는 이메일입니다.",
+    "status": 409
+}
+```
+
+---
+
+### 2.2 로그인
+**URL:** `POST /login`
+
+#### REQUEST BODY
+```json
+{
+    "email": "String (필수)",
+    "password": "String (필수)"
+}
+```
+
+#### RESPONSE STATUS CODE
+| 코드 | 설명 |
+|------|------|
+| 200 | 로그인 성공 |
+| 401 | 인증 실패 |
+| 500 | 서버 오류 |
+
+#### RESPONSE
+```json
+{
+  "id": 1,
+  "name": "사용자명",
+  "email": "user@example.com",
+  "createdAt": "생성 시간",
+  "modifiedAt": "수정 시간"
+}
+```
+
+#### ERROR CASE
+```json
+{
+    "message": "비밀번호가 일치하지 않습니다.",
+    "status": 401
+}
+```
+
+---
+
+### 2.3 로그아웃
+**URL:** `POST /logout`
+
+#### RESPONSE STATUS CODE
+| 코드 | 설명 |
+|------|------|
+| 200 | 로그아웃 성공 |
+| 401 | 인증 실패 |
+| 500 | 서버 오류 |
+
+#### RESPONSE
+```json
+{
+    "message": "로그아웃 되었습니다."
+}
+```
+
+---
+
+### 2.4 유저 조회
+**URL:** `GET /users/{userId}`
+
+#### RESPONSE STATUS CODE
+| 코드 | 설명 |
+|------|------|
+| 200 | 조회 성공 |
+| 404 | 존재하지 않는 유저 |
+| 500 | 서버 오류 |
+
+#### RESPONSE
+```json
+{
+    "id": 1,
+    "name": "사용자명",
+    "email": "user@example.com",
+    "createdAt": "생성 시간",
+    "modifiedAt": "수정 시간"
+}
+```
+
+#### ERROR CASE
+```json
+{
+    "message": "유저를 찾을 수 없습니다.",
+    "status": 404
+}
+```
+
+---
+
+### 2.5 유저 수정
+**URL:** `PUT /users/{userId}`
+
+#### REQUEST BODY
+```json
+{
+    "name": "String (선택)",
+    "email": "String (선택)",
+    "password": "String (필수, 인증용)",
+    "newPassword": "String (선택)"
+}
+```
+
+#### RESPONSE STATUS CODE
+| 코드 | 설명 |
+|------|------|
+| 200 | 수정 성공 |
+| 400 | 잘못된 요청 |
+| 403 | 비밀번호 불일치 |
+| 404 | 존재하지 않는 유저 |
+| 500 | 서버 오류 |
+
+#### RESPONSE
+```json
+{
+    "id": 1,
+    "name": "수정된 사용자명",
+    "email": "updated@example.com",
+    "createdAt": "생성 시간",
+    "modifiedAt": "수정 시간"
+}
+```
+
+#### ERROR CASE
+```json
+{
+    "message": "비밀번호 불일치",
+    "status": 403
+}
+```
+```json
+{
+    "message": "유저를 찾을 수 없습니다.",
+    "status": 404
+}
+```
+
+---
+
+### 2.6 회원 탈퇴
+**URL:** `DELETE /users/{userId}`
+
+#### REQUEST BODY
+```json
+{
+    "password": "String (필수)"
+}
+```
+
+#### RESPONSE STATUS CODE
+| 코드 | 설명 |
+|------|------|
+| 204 | 삭제 성공 |
+| 403 | 비밀번호 불일치 |
+| 404 | 존재하지 않는 유저 |
+| 500 | 서버 오류 |
+
+#### ERROR CASE
+```json
+{
+    "message": "비밀번호 불일치",
+    "status": 403
+}
+```
+```json
+{
+    "message": "유저를 찾을 수 없습니다.",
+    "status": 404
+}
+```
+
+---
+
+### 2.7 유저 전체 조회
+**URL:** `GET /users`
+
+#### RESPONSE STATUS CODE
+| 코드 | 설명 |
+|------|------|
+| 200 | 조회 성공 |
+| 500 | 서버 오류 |
+
+#### RESPONSE
+```json
+[
+    {
+        "id": 1,
+        "name": "사용자1",
+        "email": "user1@example.com",
+        "createdAt": "생성 시간",
+        "modifiedAt": "수정 시간"
+    },
+    {
+        "id": 2,
+        "name": "사용자2",
+        "email": "user2@example.com",
+        "createdAt": "생성 시간",
+        "modifiedAt": "수정 시간"
+    }
+]
+```
+
+---
+
+## 3. 댓글 관리 API
+
+### 3.1 댓글 생성
 **URL:** `POST /schedules/{scheduleId}/comments`
 
 #### REQUEST BODY
@@ -365,7 +563,7 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 
 ---
 
-### 2.2 댓글 수정
+### 3.2 댓글 수정
 **URL:** `PUT /schedules/{scheduleId}/comments/{commentId}`
 
 #### REQUEST BODY
@@ -392,6 +590,7 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
     "scheduleId": 1,
     "content": "수정된 댓글 내용",
     "name": "작성자 이름",
+    "createdAt": "생성 시간",
     "modifiedAt": "수정 시간"
 }
 ```
@@ -399,23 +598,20 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 #### ERROR CASE
 ```json
 {
-    "status": 403,
-    "message": "오류: 비밀번호 불일치"
+    "message": "비밀번호 불일치",
+    "status": 403
 }
 ```
 ```json
 {
-    "timestamp": "2026-02-12T10:30:00",
-    "status": 404,
-    "error": "Not Found",
-    "message": "오류: 존재하지 않음",
-    "path": "/schedules/1/comments/1"
+    "message": "존재하지 않음",
+    "status": 404
 }
 ```
 
 ---
 
-### 2.3 댓글 삭제
+### 3.3 댓글 삭제
 **URL:** `DELETE /schedules/{scheduleId}/comments/{commentId}`
 
 #### REQUEST BODY
@@ -437,44 +633,15 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 #### ERROR CASE
 ```json
 {
-    "status": 403,
-    "message": "오류: 비밀번호 불일치"
+    "message": "비밀번호 불일치",
+    "status": 403
 }
 ```
 ```json
 {
-    "timestamp": "2026-02-12T10:30:00",
-    "status": 404,
-    "error": "Not Found",
-    "message": "오류: 존재하지 않음",
-    "path": "/schedules/1/comments/1"
+    "message": "존재하지 않음",
+    "status": 404
 }
 ```
 
 ---
-
-## 3. 공통 사항
-
-### 3.1 날짜/시간 형식
-- ISO 8601 형식 사용: `YYYY-MM-DDThh:mm:ss`
-- 예시: `2026-02-12T10:30:00`
-
-### 3.2 문자 제한
-- 일정 제목: 최대 30자
-- 일정 내용: 최대 200자
-- 댓글 내용: 최대 100자
-
-### 3.3 인증 방식
-- 비밀번호 기반 인증
-- 생성/수정/삭제 시 비밀번호 필수
-
-### 3.4 에러 응답 구조
-```json
-{
-    "timestamp": "발생 시간",
-    "status": "HTTP 상태 코드",
-    "error": "에러 타입",
-    "message": "에러 메시지",
-    "path": "요청 경로"
-}
-```

@@ -1,9 +1,6 @@
 package com.example.schedulerdevelop.global.handler;
 
-import com.example.schedulerdevelop.global.exception.NotEqualsException;
-import com.example.schedulerdevelop.global.exception.NotFoundException;
-import com.example.schedulerdevelop.global.exception.OverCommentException;
-import com.example.schedulerdevelop.global.exception.UnauthorizedException;
+import com.example.schedulerdevelop.global.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +39,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleNotEquals(NotEqualsException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
                 "status", 403,
+                "message", e.getMessage()
+        ));
+    }
+
+    @ExceptionHandler(UsedEmailException.class)
+    public ResponseEntity<Map<String, Object>> handleConflict(UsedEmailException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "status", 409,
                 "message", e.getMessage()
         ));
     }

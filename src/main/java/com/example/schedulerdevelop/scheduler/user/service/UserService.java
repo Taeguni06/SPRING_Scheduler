@@ -1,6 +1,7 @@
 package com.example.schedulerdevelop.scheduler.user.service;
 import com.example.schedulerdevelop.global.exception.NotEqualsException;
 import com.example.schedulerdevelop.global.exception.NotFoundException;
+import com.example.schedulerdevelop.global.exception.UsedEmailException;
 import com.example.schedulerdevelop.global.security.PasswordEncoder;
 import com.example.schedulerdevelop.scheduler.user.dto.*;
 import com.example.schedulerdevelop.scheduler.user.entity.User;
@@ -22,6 +23,10 @@ public class UserService {
     @Transactional
     public UserResponse signup(SignUpRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
+
+        if(!request.getEmail().equals(userRepository.findByEmail(request.getEmail()))) {
+            throw new UsedEmailException("이미 존재하는 이메일입니다.");
+        }
 
         User user = new User(
                 request.getName(),
