@@ -1,5 +1,6 @@
 package com.example.schedulerdevelop.scheduler.schedule.controller;
 
+import com.example.schedulerdevelop.global.dto.PageResponse;
 import com.example.schedulerdevelop.scheduler.schedule.dto.*;
 import com.example.schedulerdevelop.scheduler.schedule.service.ScheduleService;
 import com.example.schedulerdevelop.scheduler.user.dto.UserResponse;
@@ -7,6 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +39,14 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetScheduleResponse>> findAll(@RequestParam(required = false) String userName
+    public ResponseEntity<PageResponse<GetScheduleResponse>> findAll(
+            @RequestParam(required = false) String userName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userName));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<GetScheduleResponse> responsePage = scheduleService.findAll(userName, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(new PageResponse<>(responsePage));
     }
 
     @GetMapping("/{scheduleId}")

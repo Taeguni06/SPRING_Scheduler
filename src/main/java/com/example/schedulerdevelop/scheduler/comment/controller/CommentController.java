@@ -58,7 +58,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.update(commentId, request, loginUser.getId()));
     }
 
-    @PutMapping("/{commentId}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long commentId,
             HttpServletRequest httpRequest

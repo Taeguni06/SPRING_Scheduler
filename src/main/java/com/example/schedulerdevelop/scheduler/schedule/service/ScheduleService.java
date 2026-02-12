@@ -8,6 +8,8 @@ import com.example.schedulerdevelop.scheduler.schedule.repository.ScheduleReposi
 import com.example.schedulerdevelop.scheduler.user.entity.User;
 import com.example.schedulerdevelop.scheduler.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,34 +47,42 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetScheduleResponse> findAll(String userName) {
-        List<Schedule> schedules;
+    public Page<GetScheduleResponse> findAll(String userName, Pageable pageable) {
+        Page<Schedule> schedules;
 
         if (userName != null && !userName.isBlank()) {
-            schedules = scheduleRepository.findByUserName(userName);
+            schedules = scheduleRepository.findByUserName(pageable, userName);
         } else {
-            schedules = scheduleRepository.findAll();
+            schedules = scheduleRepository.findAll(pageable);
         }
 
         if (schedules.isEmpty()) {
             throw new NotFoundException("일정을 찾을 수 없습니다.");
         }
 
-        List<GetScheduleResponse> dtos = new ArrayList<>();
-        for (Schedule schedule : schedules) {
-            GetScheduleResponse dto = new GetScheduleResponse(
-                    schedule.getId(),
-                    schedule.getTitle(),
-                    schedule.getContent(),
-                    schedule.getUser().getName(),
-                    schedule.getCreatedAt(),
-                    schedule.getModifiedAt()
-            );
-
-            dtos.add(dto);
-        }
-        return dtos;
+        //        List<GetScheduleResponse> dtos = new ArrayList<>();
+//        for (Schedule schedule : schedules) {
+//            GetScheduleResponse dto = new GetScheduleResponse(
+//                    schedule.getTitle(),
+//                    schedule.getContent(),
+//                    (long) commentService.findByScheduleId(schedule.getId()).size(),
+//                    schedule.getCreatedAt(),
+//                    schedule.getModifiedAt(),
+//                    schedule.getUser().getName()
+//            );
+//
+//            dtos.add(dto);
+//        }
+        return schedules.map(schedule -> new GetScheduleResponse(
+                schedule.getTitle(),
+                schedule.getContent(),
+                (long) commentService.findByScheduleId(schedule.getId()).size(),
+                schedule.getCreatedAt(),
+                schedule.getModifiedAt(),
+                schedule.getUser().getName()
+        ));
     }
+
 
     @Transactional(readOnly = true)
     public GetOneScheduleResponse findOne(Long scheduleId) {
