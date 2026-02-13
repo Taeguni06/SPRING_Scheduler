@@ -645,3 +645,9 @@ SwaggerUI: http://localhost:8080/swagger-ui/index.html#/
 ```
 
 ---
+
+## 공통사항
+
+댓글 개수 일정당 10개
+
+일정 및 댓글의 생성, 수정, 삭제에는 로그인 필요

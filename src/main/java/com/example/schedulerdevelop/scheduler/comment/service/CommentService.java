@@ -60,6 +60,10 @@ public class CommentService {
     public List<CommentResponse> findByScheduleId(Long scheduleId) {
         List<Comment> comments = commentRepository.findByScheduleId(scheduleId);
 
+        if (comments.isEmpty()) {
+            throw new NotFoundException("유저를 찾을 수 없습니다.");
+        }
+
         List<CommentResponse> dtos = new ArrayList<>();
         for (Comment comment : comments) {
             CommentResponse dto = new CommentResponse(
